@@ -136,11 +136,11 @@ const Home: NextPage = () => {
       if (programId) {
         const inputs = [{
           name: `guess_input`,
-          value: guess,
+          value: parseInt(guess),
         },
         {
           name: `retrieve_input`,
-          value: valueRetrieve,
+          value: parseInt(valueRetrieve),
         }];
 
         const result = await computeTiny(nillion, nillionClient, [], programId, party2, inputs);
@@ -154,8 +154,7 @@ const Home: NextPage = () => {
       <div className="flex items-center flex-col pt-10">
         <div className="px-5 flex flex-col">
           <h3 className="text-xl">
-            <span className="block text-xl font-bold">tinybin: Secure Comparison of User's Guess to API-Supplied Target
-</span>
+            <span className="block text-xl font-bold">tinybin: Secure Comparison of User's Guess to API-Supplied Target</span>
             {!connectedAddress && <p>Connect your MetaMask Flask wallet</p>}
             {connectedAddress && connectedToSnap && !userKey && (
               <a target="_blank" href="https://nillion-snap-site.vercel.app/" rel="noopener noreferrer">
