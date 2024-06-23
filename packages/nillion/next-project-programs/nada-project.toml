@@ -3,11 +3,6 @@ version = "0.1.0"
 authors = [""]
 
 [[programs]]
-path = "src/main.py"
-name = "main"
-prime_size = 128
-
-[[programs]]
-path = "src/addition_simple.py"
-name = "addition_simple"
+path = "src/tiny_bin.py"
+name = "tiny_bin"
 prime_size = 128
