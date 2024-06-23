@@ -46,7 +46,8 @@ const Home: NextPage = () => {
 
   // store program in the Nillion network and set the resulting program id
   async function handleStoreProgram() {
-    await storeProgram(nillionClient, programName).then(setProgramId);
+    const programId = await storeProgram(nillionClient, programName);
+    setProgramId(programId);
     handleRetrieve();
   }
 
@@ -158,12 +159,12 @@ const Home: NextPage = () => {
     <>
       <div className="flex items-center flex-col pt-10">
         <div className="px-5 flex flex-col">
-          <h3 className="text-xl">
-            <span className="block text-xl font-bold">tinybin: Secure Comparison of User's Guess to API-Supplied Target</span>
+          <h3 className="text-2xl">
+            <span className="block text-4xl font-bold mb-6">Weather Guess: Secure Comparison of User's Guess of Temperature to Weather API</span>
             {!connectedAddress && <p>Connect your MetaMask Flask wallet</p>}
             {connectedAddress && connectedToSnap && !userKey && (
               <a target="_blank" href="https://nillion-snap-site.vercel.app/" rel="noopener noreferrer">
-                <button className="btn btn-sm btn-primary mt-4">
+                <button className="btn btn-sm btn-primary mt-4 p-2 rounded-md">
                   No Nillion User Key - Generate and store user key here
                 </button>
               </a>
@@ -171,14 +172,14 @@ const Home: NextPage = () => {
           </h3>
 
           {connectedAddress && (
-            <div className="flex justify-center items-center space-x-2">
+            <div className="flex justify-center items-center space-x-2 text-xl">
               <p className="my-2 font-medium">Connected Wallet Address:</p>
               <Address address={connectedAddress} />
             </div>
           )}
 
           {connectedAddress && !connectedToSnap && (
-            <button className="btn btn-sm btn-primary mt-4 bg-blue-300" onClick={handleConnectToSnap}>
+            <button className="btn btn-sm btn-primary mt-4 bg-blue-300 p-2 rounded-md text-xl" onClick={handleConnectToSnap}>
               Click connect to Snap with your Nillion User Key
             </button>
           )}
@@ -187,7 +188,7 @@ const Home: NextPage = () => {
             <div>
               {userKey && (
                 <div>
-                  <div className="flex justify-center items-center space-x-2">
+                  <div className="flex justify-center items-center space-x-2 text-xl">
                     <p className="my-2 font-medium">
                       🤫 Nillion User Key from{" "}
                       <a target="_blank" href="https://nillion-snap-site.vercel.app/" rel="noopener noreferrer">
@@ -200,7 +201,7 @@ const Home: NextPage = () => {
                   </div>
 
                   {userId && (
-                    <div className="flex justify-center items-center space-x-2">
+                    <div className="flex justify-center items-center space-x-2 text-xl">
                       <p className="my-2 font-medium">Connected as Nillion User ID:</p>
                       <CopyString str={userId} />
                     </div>
@@ -211,22 +212,22 @@ const Home: NextPage = () => {
           )}
         </div>
 
-        <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
+        <div className="flex-grow bg-base-300 w-full mt-2 px-8 py-12">
           <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
             {!connectedToSnap ? (
               <NillionOnboarding />
             ) : (
               <div>
-                <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-m rounded-3xl my-2">
-                  <h1 className="text-xl">Store a Nada program</h1>
+                <div className="flex flex-col bg-base-100 px-2 py-2 text-center items-center max-w-m rounded-3xl my-2">
+                  <h1 className="text-2xl">Create and Store a Secure Temperature Guess Nada program</h1>
                   {!programId ? (
-                    <button className="btn btn-sm btn-primary mt-4 bg-blue-300" onClick={handleStoreProgram}>
-                      Click Store {programName} program
+                    <button className="btn btn-sm btn-primary mt-4 bg-blue-300 py-2 px-4 rounded-md" onClick={handleStoreProgram}>
+                      Create and Store Program
                     </button>
                   ) : (
-                    <div>
-                      ✅ {programName} program stored <br />
-                      <span className="flex">
+                    <div className="text-center text-xl mt-4">
+                      ✅ Secure temperature guess Nada program stored <br />
+                      <span className="flex justify-center mt-2">
                         <CopyString str={programId} start={5} end={programName.length + 5} textBefore="program_id: " />
                       </span>
                     </div>

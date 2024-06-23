@@ -1,11 +1,11 @@
 import "@rainbow-me/rainbowkit/styles.css";
 import { Metadata } from "next";
-import { Press_Start_2P } from "next/font/google";
+import { Goldman } from "next/font/google";
 import { ScaffoldEthAppWithProviders } from "@/components/ScaffoldEthAppWithProviders";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import "@/styles/globals.css";
 
-const font = Press_Start_2P({ weight: ["400"], subsets: ["latin"] });
+const font = Goldman({ weight: ["400"], subsets: ["latin"] });
 
 const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
   ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`

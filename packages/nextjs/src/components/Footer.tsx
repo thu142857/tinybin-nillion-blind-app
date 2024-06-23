@@ -33,6 +33,7 @@ export const Footer = () => {
               <a href="https://nillion-snap-site.vercel.app/" target="_blank" rel="noreferrer" className="link ml-5">
                 Generate Nillion User Key
               </a>
+              <SwitchTheme className={`pointer-events-auto ${isLocalNetwork ? "self-end md:self-auto" : ""}`} />
             </div>
             <span></span>
           </div>
