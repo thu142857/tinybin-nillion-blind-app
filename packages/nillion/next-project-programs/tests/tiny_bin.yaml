@@ -1,0 +1,12 @@
+---
+program: tiny_bin
+inputs:
+  secrets:
+    retrieve_input:
+      SecretInteger: "32"
+    guess_input:
+      SecretInteger: "32"
+  public_variables: {}
+expected_outputs:
+  my_output:
+    SecretBoolean: true

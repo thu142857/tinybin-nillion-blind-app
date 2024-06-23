@@ -5,7 +5,7 @@ type SubmitGuessProps = {
 };
 
 const SubmitGuess: React.FC<SubmitGuessProps> = ({ guessSubmit }) => {
-  const [guess, setGuess] = useState<'even' | 'odd' | null>(null);
+  const [guess, setGuess] = useState<string>('');
   const [isDisabled, setDisableButton] = useState<boolean>(false);
 
   const handleGuess = (value: 'even' | 'odd') => {
@@ -14,7 +14,7 @@ const SubmitGuess: React.FC<SubmitGuessProps> = ({ guessSubmit }) => {
   };
 
   const onSubmit = () => {
-    if (guess !== null) {
+    if (guess !== '') {
       guessSubmit(guess);
       setDisableButton(true);
     }
@@ -24,22 +24,18 @@ const SubmitGuess: React.FC<SubmitGuessProps> = ({ guessSubmit }) => {
     <div style={{ borderColor: 'black', borderStyle: 'solid' }} className="flex flex-col items-center border p-4 m-2">
       <h2 className="text-xl mb-4">Submit Guess (from User)</h2>
       <div className="flex flex-col mb-4">
-        <button style={{ borderColor: 'black', borderStyle: 'solid' }}
-          className={`border p-2 mb-2 ${guess === 'even' ? 'bg-blue-600 text-white' : ''}`}
-          onClick={() => handleGuess('even')}
-        >
-          Even
-        </button>
-        <button style={{ borderColor: 'black', borderStyle: 'solid' }}
-          className={`border p-2 ${guess === 'odd' ? 'bg-blue-600 text-white' : ''}`}
-          onClick={() => handleGuess('odd')}
-        >
-          Odd
-        </button>
+        <label htmlFor="temperaturePrediction">The weather forecast for Da Nang City tomorrow</label>
+        <input
+          id="temperaturePrediction"
+          name="temperaturePrediction"
+          value={guess}
+          type="number"
+          onChange={e => setGuess(e.target.value)}
+        />
       </div>
       <button style={{ borderColor: 'black', borderStyle: 'solid' }}
-        className={`p-2  ${guess === null || isDisabled ? 'bg-gray-300 text-gray-600' : 'bg-blue-500 text-white'}`}
-        disabled={guess === null || isDisabled}
+        className={`p-2  ${guess === '' || isDisabled ? 'bg-gray-300 text-gray-600' : 'bg-blue-500 text-white'}`}
+        disabled={guess === '' || isDisabled}
         onClick={onSubmit}
       >
         Mask & Submit

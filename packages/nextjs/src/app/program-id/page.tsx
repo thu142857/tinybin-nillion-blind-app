@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
+import CodeSnippet from "@/components/nillion/CodeSnippet";
 import { CopyString } from "@/components/nillion/CopyString";
 import { NillionOnboarding } from "@/components/nillion/NillionOnboarding";
 import SubmitGuess from "@/components/nillion/SubmitGuess";
@@ -27,7 +28,8 @@ const Home: NextPage = () => {
   const [nillionClient, setNillionClient] = useState<any>(null);
   const [output, setOutput] = useState<string>("");
 
-  const [programId, setProgramId] = useState<string>('');
+  const [programName] = useState<string>("tiny_bin");
+  const [programId, setProgramId] = useState<string | null>(null);
 
   const [storedSecretsNameToStoreId, setStoredSecretsNameToStoreId] = useState<StringObject>({
     guess_input: null,
@@ -40,6 +42,12 @@ const Home: NextPage = () => {
     const snapResponse = await getUserKeyFromSnap();
     setUserKey(snapResponse?.user_key || null);
     setConnectedToSnap(snapResponse?.connectedToSnap || false);
+  }
+
+  // store program in the Nillion network and set the resulting program id
+  async function handleStoreProgram() {
+    await storeProgram(nillionClient, programName).then(setProgramId);
+    handleRetrieve();
   }
 
   // reset nillion values
@@ -74,6 +82,34 @@ const Home: NextPage = () => {
       });
     }
   }, [userKey]);
+
+  async function fetchDailyWeatherForecast(): Promise<any> {
+
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=16.055330&longitude=108.201382&daily=temperature_2m_max&forecast_days=1`;
+
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch daily weather forecast:", error);
+      throw error;
+    }
+  }
+
+  const handleRetrieve = async () => {
+    try {
+      const response = await fetchDailyWeatherForecast();
+      const temperatureShow = response.daily.temperature_2m_max[0];
+      const temperature = Math.floor(temperatureShow).toString();
+      handleGuessSubmit(temperature);
+    } catch (error) {
+      console.error('Error fetching target value:', error);
+    }
+  };
 
   async function handleGuessSubmit(guessValue: string) {
     if (programId) {
@@ -112,31 +148,9 @@ const Home: NextPage = () => {
       );
 
       console.log("store_id", store_id);
+      //store_id: b7d72375-f093-48c2-9286-be037f4d2087
 
       setStoredSecretsNameToStoreId({ ...storedSecretsNameToStoreId, [secret1Name]: store_id });
-    }
-  }
-
-  async function handelTargetSubmit(valueRetrieve: string) {
-    console.log("valueRetrieve:", valueRetrieve);
-    if (programId) {
-      const nillionClientUtil2 = await import("@/utils/nillion/nillionClient");
-      const nillionClient2 = await nillionClientUtil2.getNillionClient(UserKey.from_seed('party2').to_base58());
-      const party2 = nillionClient2.nillionClient.party_id;
-
-      if (programId) {
-        const inputs = [{
-          name: `guess_input`,
-          value: parseInt(guess),
-        },
-        {
-          name: `retrieve_input`,
-          value: parseInt(valueRetrieve),
-        }];
-
-        const result = await computeTiny(nillion, nillionClient, [], programId, party2, inputs);
-        setOutput(result == "1" ? 'User guessed correctly!' : 'User guessed incorrectly!');
-      }
     }
   }
 
@@ -205,27 +219,18 @@ const Home: NextPage = () => {
               <div>
                 <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-m rounded-3xl my-2">
                   <h1 className="text-xl">Store a Nada program</h1>
-                    <div className="flex flex-col mb-4">
-                      <label>Store program Id</label>
-                      <input
-                        name="storeProgramId"
-                        value={programId}
-                        onChange={e => setProgramId(e.target.value)}
-                      />
+                  {!programId ? (
+                    <button className="btn btn-sm btn-primary mt-4 bg-blue-300" onClick={handleStoreProgram}>
+                      Click Store {programName} program
+                    </button>
+                  ) : (
+                    <div>
+                      ✅ {programName} program stored <br />
+                      <span className="flex">
+                        <CopyString str={programId} start={5} end={programName.length + 5} textBefore="program_id: " />
+                      </span>
                     </div>
-                </div>
-
-                <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center w-full rounded-3xl my-2 justify-between">
-                  <div className="border p-4 m-2 w-full">
-                    <SubmitGuess guessSubmit={handleGuessSubmit} />
-                  </div>
-                  <div className="border p-4 m-2 w-full">
-                    <SubmitTarget handleTarget={handelTargetSubmit} />
-                  </div>
-                  <div style={{ borderColor: 'black', borderStyle: 'solid' }} className="border p-4 m-2 w-full">
-                    <h2 className="text-lg mb-2">Network Output</h2>
-                    <div className="text-center text-xl">{output}</div>
-                  </div>
+                  )}
                 </div>
               </div>
             )}
